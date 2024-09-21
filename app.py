@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-
+from os.path import join
 
 def preprocesing(df):
 
@@ -13,7 +13,7 @@ def main():
     st.sidebar.write("<h1> COVID-19 CyL </h1> ", unsafe_allow_html=True)
 
     df = pd.read_csv(
-        "data/situacion-de-hospitalizados-por-coronavirus-en-castilla-y-leon.csv", delimiter=";")
+        join("data", "situacion-de-hospitalizados-por-coronavirus-en-castilla-y-leon.csv"), delimiter=";")
 
     df['fecha'] = pd.to_datetime(df['fecha'], format='%Y-%m-%d')
 
