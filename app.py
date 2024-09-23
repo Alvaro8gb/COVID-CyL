@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 from os.path import join
 import pydeck as pdk
-import numpy as np
+from PIL import Image
+
 
 COLUMNAS = [
     'Nuevos Hospitalizados en Planta',
@@ -15,6 +16,12 @@ COLUMNAS = [
 
 
 def fmt_norm(x): return x.strip().replace(" ", "_") + "_norm"
+
+
+@st.cache_data
+def load_image(image_path):
+    img = Image.open(image_path)
+    return img
 
 
 def preprocesing(df):
@@ -47,20 +54,27 @@ def preprocesing(df):
 
     return df
 
+
 def toggle_date_selector():
     st.session_state.show_slider = not st.session_state.show_slider
 
+
 def main():
 
-    st.sidebar.write("<h1> COVID-19 CyL </h1> ", unsafe_allow_html=True)
+    logo_image = load_image("img/logo.png")
+
+    st.sidebar.write(
+        "<h1> VIII Concurso de Datos Abiertos </h1> ", unsafe_allow_html=True)
+    st.sidebar.image(
+        logo_image, caption='https://datosabiertos.jcyl.es/', use_column_width=True)
 
     df = pd.read_csv(
         join("data", "situacion-de-hospitalizados-por-coronavirus-en-castilla-y-leon.csv"), delimiter=";")
 
     df = preprocesing(df)
 
-    st.title("Datos de COVID-19 en Castilla y León")
-
+    st.title(
+        "PandemIA CyL: Monitorización de Hospitales por COVID-19 en Castilla y León")
 
     if 'show_slider' not in st.session_state:
         st.session_state.show_slider = True
@@ -84,7 +98,7 @@ def main():
             "Seleccione una fecha",
             value=df['fecha'].min(),
             min_value=df['fecha'].min(),
-            max_value=df['fecha'].max()  # Asegura que se usa max_value correctamente
+            max_value=df['fecha'].max()
         )
 
     filtered_df = df[df["fecha"] == pd.to_datetime(selected_date)]
@@ -122,10 +136,14 @@ def main():
         st.write(f"Número de hospitales: {len(filtered_df)}")
         st.write("Resumen:")
         st.dataframe(filtered_df[[
-            'Hospital', dato_repr, fmt_norm(dato_repr)]].set_index('Hospital'))
+            'Hospital', dato_repr]].set_index('Hospital'))
 
     else:
         st.write("No hay datos disponibles para la fecha seleccionada.")
+
+    st.write("<h2> IA Predictiva de futuros brotes </h2> ",
+             unsafe_allow_html=True)
+    st.info("🔧 Esta sección estará disponible en el futuro. ¡Mantente atento a las actualizaciones!")
 
 
 if __name__ == "__main__":
