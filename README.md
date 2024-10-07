@@ -1,7 +1,3 @@
-
-
-
-
 # PandemIA CyL: Monitorización de Hospitales por COVID-19 en Castilla y León
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pandem-ia-cyl.streamlit.app/)
